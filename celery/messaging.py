@@ -3,7 +3,7 @@
 Sending and Receiving Messages
 
 """
-from carrot.messaging import Publisher, Consumer
+from carrot.messaging import Publisher, Consumer, ConsumerSet
 from celery import conf
 from celery.utils import gen_unique_id
 from celery.utils import mitemgetter
@@ -62,6 +62,10 @@ class TaskPublisher(Publisher):
 
         self.send(message_data, **extract_msg_options(kwargs))
         return task_id
+
+
+def get_consumer_set(connection, queues=conf.AMQP_CONSUMER_QUEUES):
+    return ConsumerSet(connection, from_dict=queues, decoder=pickle.loads)
 
 
 class TaskConsumer(Consumer):
